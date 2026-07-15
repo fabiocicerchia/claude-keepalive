@@ -20,6 +20,12 @@
 ## Install
 
 ```sh
+curl -fsSL https://raw.githubusercontent.com/fabiocicerchia/claude-keepalive/main/install.sh | bash
+```
+
+Or clone it directly:
+
+```sh
 git clone https://github.com/fabiocicerchia/claude-keepalive.git
 cd claude-keepalive
 ```
