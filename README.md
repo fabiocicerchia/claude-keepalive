@@ -12,9 +12,13 @@
 
 ## Features
 
-- Transparent wrapper: runs `claude` inside a PTY, so the interactive TUI behaves normally.
-- Detects "You've hit your session limit", parses the reset time, and sleeps until then.
+- Transparent wrapper: runs `claude` inside a PTY (with real window size and
+  resize handling), so the interactive TUI behaves normally and `Ctrl-C` works
+  as usual inside claude.
+- Detects the session/usage-limit banner (all known wordings), parses the
+  reset time — with or without minutes — and sleeps until then.
 - Resumes the exact session (`claude --resume <id>`) after the wait, falling back to `--continue`.
+- If the reset time can't be parsed, retries after 30 minutes instead of giving up.
 - Pure Python 3 standard library — nothing to install.
 
 ## Install
@@ -42,7 +46,8 @@ Requires Python 3 and the [`claude`](https://docs.claude.com/en/docs/claude-code
 ./claude-keepalive.py --resume <session-id>
 ```
 
-Press `Ctrl-C` to stop.
+`Ctrl-C` is forwarded to claude (press twice to quit it, which also stops the
+wrapper). While waiting for the reset, `Ctrl-C` stops the wrapper.
 
 ## Documentation
 

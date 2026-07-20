@@ -11,5 +11,5 @@ setup: ## Install git hooks and dev tooling
 lint: ## Run all pre-commit checks on the whole tree
 	pre-commit run --all-files
 
-test: ## Run tests (wire up your test runner)
-	@echo "TODO: add test command"
+test: ## Run tests
+	python3 -m unittest discover -s tests -v
