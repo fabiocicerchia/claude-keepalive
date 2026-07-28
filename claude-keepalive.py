@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import fcntl
 import os
 import pty
 import tty
@@ -13,11 +14,11 @@ import argparse
 from datetime import datetime
 
 BUFFER_SIZE = 4096
-IGNORE_INITIAL_BYTES = 8192
 RESET_PATTERN = re.compile(r"resets (\d+:\d+)(am|pm)")
 RESUME_PATTERN = re.compile(r"claude --resume ([a-f0-9-]+)")
 
 child_pid = None
+child_fd = None
 
 
 def forward_signal(sig, frame):
@@ -25,11 +26,22 @@ def forward_signal(sig, frame):
         os.kill(child_pid, sig)
 
 
+def sync_winsize(*_):
+    if not child_fd:
+        return
+
+    winsize = fcntl.ioctl(sys.stdin.fileno(), termios.TIOCGWINSZ, b"\0" * 8)
+
+    try:
+        fcntl.ioctl(child_fd, termios.TIOCSWINSZ, winsize)
+    except OSError:
+        pass
+
+
 def run_claude(command):
-    global child_pid
+    global child_pid, child_fd
 
     buffer = b""
-    seen = 0
 
     try:
         stdin_fd = sys.stdin.fileno()
@@ -41,14 +53,12 @@ def run_claude(command):
             os.execvp(command[0], command)
 
         child_pid = pid
+        child_fd = fd
+        sync_winsize()
+        signal.signal(signal.SIGWINCH, sync_winsize)
 
         while True:
-            ready, _, _ = select.select(
-                [fd, sys.stdin.fileno()],
-                [],
-                [],
-                0.2
-            )
+            ready, _, _ = select.select([fd, sys.stdin.fileno()], [], [], 0.2)
 
             if fd in ready:
                 try:
@@ -60,17 +70,12 @@ def run_claude(command):
                     break
 
                 os.write(sys.stdout.fileno(), data)
-                seen += len(data)
+                buffer = (buffer + data)[-BUFFER_SIZE:]
 
-                if seen > IGNORE_INITIAL_BYTES:
-                    buffer = (buffer + data)[-BUFFER_SIZE:]
+                clean = re.sub(rb"\x1b\[[0-?]*[ -/]*[@-~]", b"", buffer).decode(
+                    errors="ignore"
+                )
 
-                clean = re.sub(
-                    rb'\x1b\[[0-?]*[ -/]*[@-~]',
-                    b'',
-                    buffer
-                ).decode(errors="ignore")
-            
                 if "You've hit your session limit" in clean:
                     reset_match = RESET_PATTERN.search(clean)
 
@@ -81,7 +86,7 @@ def run_claude(command):
                     os.kill(pid, signal.SIGTERM)
 
                     return 1, clean
-            
+
             if sys.stdin.fileno() in ready:
                 data = os.read(sys.stdin.fileno(), 1024)
 
@@ -95,11 +100,7 @@ def run_claude(command):
                 os.write(fd, data)
 
     finally:
-        termios.tcsetattr(
-            stdin_fd,
-            termios.TCSADRAIN,
-            old_settings
-        )
+        termios.tcsetattr(stdin_fd, termios.TCSADRAIN, old_settings)
 
     if child_pid:
         try:
@@ -107,23 +108,21 @@ def run_claude(command):
         except ChildProcessError:
             pass
 
+    child_fd = None
+
     return 1, buffer.decode(errors="ignore")
 
 
 def wait_until(reset):
     now = datetime.now()
 
-    target = datetime.strptime(
-        reset.upper(),
-        "%I:%M%p"
-    ).replace(
-        year=now.year,
-        month=now.month,
-        day=now.day
+    target = datetime.strptime(reset.upper(), "%I:%M%p").replace(
+        year=now.year, month=now.month, day=now.day
     )
 
     if target <= now:
         from datetime import timedelta
+
         target += timedelta(days=1)
 
     seconds = int((target - now).total_seconds()) + 10
@@ -137,10 +136,7 @@ def main():
     signal.signal(signal.SIGTERM, forward_signal)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--resume",
-        help="Claude session id to resume"
-    )
+    parser.add_argument("--resume", help="Claude session id to resume")
 
     args = parser.parse_args()
 
@@ -154,7 +150,7 @@ def main():
 
     while True:
         code, output = run_claude(command)
-        clean = re.sub(r'\x1b\[[0-?]*[ -/]*[@-~]', '', output)
+        clean = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", output)
 
         if code == 0:
             return 0
