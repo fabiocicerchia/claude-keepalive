@@ -11,7 +11,7 @@ import time
 import re
 import termios
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 
 BUFFER_SIZE = 4096
 RESET_PATTERN = re.compile(r"resets (\d+:\d+)(am|pm)")
@@ -121,8 +121,6 @@ def wait_until(reset):
     )
 
     if target <= now:
-        from datetime import timedelta
-
         target += timedelta(days=1)
 
     seconds = int((target - now).total_seconds()) + 10
@@ -139,9 +137,6 @@ def main():
     parser.add_argument("--resume", help="Claude session id to resume")
 
     args = parser.parse_args()
-
-    signal.signal(signal.SIGINT, forward_signal)
-    signal.signal(signal.SIGTERM, forward_signal)
 
     if args.resume:
         command = ["claude", "--resume", args.resume]
