@@ -12,7 +12,9 @@ spec.loader.exec_module(ck)
 
 class ResetPatternTests(unittest.TestCase):
     def test_matches_am_time(self):
-        m = ck.RESET_PATTERN.search("You've hit your session limit, resets 3:45am tomorrow")
+        m = ck.RESET_PATTERN.search(
+            "You've hit your session limit, resets 3:45am tomorrow"
+        )
         self.assertEqual(m.group(1) + m.group(2), "3:45am")
 
     def test_matches_pm_time(self):
@@ -38,7 +40,7 @@ class WaitUntilTests(unittest.TestCase):
     @mock.patch.object(ck, "time")
     @mock.patch.object(ck, "datetime")
     def test_waits_until_later_today(self, mock_datetime, mock_time):
-        mock_datetime.now.return_value = datetime(2026, 7, 28, 10, 0, 0)
+        mock_datetime.now.return_value = datetime(2026, 7, 28, 10, 0, 0)  # noqa: DTZ001
         mock_datetime.strptime.side_effect = datetime.strptime
 
         ck.wait_until("10:05am")
@@ -48,7 +50,7 @@ class WaitUntilTests(unittest.TestCase):
     @mock.patch.object(ck, "time")
     @mock.patch.object(ck, "datetime")
     def test_rolls_to_next_day_if_time_already_passed(self, mock_datetime, mock_time):
-        mock_datetime.now.return_value = datetime(2026, 7, 28, 10, 0, 0)
+        mock_datetime.now.return_value = datetime(2026, 7, 28, 10, 0, 0)  # noqa: DTZ001
         mock_datetime.strptime.side_effect = datetime.strptime
 
         ck.wait_until("9:00am")

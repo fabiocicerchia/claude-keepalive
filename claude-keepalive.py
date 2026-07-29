@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
+import argparse
 import fcntl
 import os
 import pty
-import tty
+import re
 import select
 import signal
 import sys
-import time
-import re
 import termios
-import argparse
+import time
+import tty
 from datetime import datetime, timedelta
 
 BUFFER_SIZE = 4096
@@ -114,9 +114,12 @@ def run_claude(command):
 
 
 def wait_until(reset):
-    now = datetime.now()
+    # Deliberately naive/local: `reset` is a wall-clock time parsed from
+    # Claude CLI's own message (shown in the user's local time), so `now`
+    # must be local too for the comparison below to mean anything.
+    now = datetime.now()  # noqa: DTZ005
 
-    target = datetime.strptime(reset.upper(), "%I:%M%p").replace(
+    target = datetime.strptime(reset.upper(), "%I:%M%p").replace(  # noqa: DTZ007
         year=now.year, month=now.month, day=now.day
     )
 
