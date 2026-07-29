@@ -105,9 +105,12 @@ def parse_reset(clean):
 
 
 def seconds_until(reset, now=None):
-    now = now or datetime.now()
+    # Deliberately naive/local: `reset` is a wall-clock time parsed from
+    # Claude CLI's own message (shown in the user's local time), so `now`
+    # must be local too for the comparison below to mean anything.
+    now = now or datetime.now()  # noqa: DTZ005
 
-    target = datetime.strptime(reset.upper(), "%I:%M%p").replace(
+    target = datetime.strptime(reset.upper(), "%I:%M%p").replace(  # noqa: DTZ007
         year=now.year, month=now.month, day=now.day
     )
 
@@ -303,7 +306,7 @@ def main():
             seconds = FALLBACK_WAIT_SECONDS
             print("\nSession limit reached; couldn't parse the reset time.")
 
-        until = datetime.now() + timedelta(seconds=seconds)
+        until = datetime.now() + timedelta(seconds=seconds)  # noqa: DTZ005
         print(f"Waiting {seconds}s (until ~{until:%H:%M}). Press Ctrl-C to stop.")
 
         time.sleep(seconds)

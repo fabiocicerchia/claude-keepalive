@@ -83,20 +83,20 @@ class TestParseReset(unittest.TestCase):
 
 class TestSecondsUntil(unittest.TestCase):
     def test_future_same_day(self):
-        now = datetime(2026, 7, 20, 14, 0, 0)
+        now = datetime(2026, 7, 20, 14, 0, 0)  # noqa: DTZ001
         self.assertEqual(
             MOD.seconds_until("3:00pm", now), 3600 + MOD.RESET_MARGIN_SECONDS
         )
 
     def test_past_rolls_to_next_day(self):
-        now = datetime(2026, 7, 20, 14, 0, 0)
+        now = datetime(2026, 7, 20, 14, 0, 0)  # noqa: DTZ001
         self.assertEqual(
             MOD.seconds_until("1:00pm", now),
             23 * 3600 + MOD.RESET_MARGIN_SECONDS,
         )
 
     def test_midnight(self):
-        now = datetime(2026, 7, 20, 23, 0, 0)
+        now = datetime(2026, 7, 20, 23, 0, 0)  # noqa: DTZ001
         self.assertEqual(
             MOD.seconds_until("12:00am", now), 3600 + MOD.RESET_MARGIN_SECONDS
         )
