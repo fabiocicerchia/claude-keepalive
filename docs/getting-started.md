@@ -23,4 +23,12 @@ cd claude-keepalive
 ```
 
 When the session limit is hit, the wrapper prints the reset time, sleeps until
-then, and resumes automatically. `Ctrl-C` stops it.
+then (plus a small margin), and resumes automatically — so an overnight limit
+doesn't require any manual restart. `Ctrl-C` is forwarded to claude while it
+runs (press twice to quit it); during the wait, `Ctrl-C` stops the wrapper.
+
+## Test
+
+```sh
+make test
+```
