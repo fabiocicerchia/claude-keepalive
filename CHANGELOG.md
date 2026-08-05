@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.1...v0.1.2) (2026-08-05)
+
+
+### Bug Fixes
+
+* **ci:** install pytest even when the package has no [dev] extra ([d37c1e5](https://github.com/fabiocicerchia/claude-keepalive/commit/d37c1e5d75cb3c80a4a420cafb89aa5c6f1394b1))
+* **pre-commit:** stop check-yaml failing on Helm templates and multi-doc manifests ([ba2dccd](https://github.com/fabiocicerchia/claude-keepalive/commit/ba2dccd23c402081f03f0bc2ca9e2728414af083))
+* **security:** skip the SARIF upload on private repos ([2472866](https://github.com/fabiocicerchia/claude-keepalive/commit/2472866533ceb19676dec8f7951fa1418512d6ef))
+
 ## [0.1.1](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.0...v0.1.1) (2026-07-30)
 
 
