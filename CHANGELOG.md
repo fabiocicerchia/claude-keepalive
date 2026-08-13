@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.2...v0.1.3) (2026-08-13)
+
+
+### Bug Fixes
+
+* security and code-quality findings ([#28](https://github.com/fabiocicerchia/claude-keepalive/issues/28)) ([d41155f](https://github.com/fabiocicerchia/claude-keepalive/commit/d41155f80795e90bb4ffd99595523167bc398ce8))
+
 ## [0.1.2](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.1...v0.1.2) (2026-08-06)
 
 
