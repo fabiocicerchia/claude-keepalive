@@ -123,7 +123,7 @@ def seconds_until(reset, now=None):
 def drain(fd, timeout):
     # The reset time can land in a later chunk than the limit phrase; keep
     # forwarding output briefly so it makes it into the buffer.
-    data = b""
+    chunks = []
     deadline = time.monotonic() + timeout
 
     while time.monotonic() < deadline:
@@ -141,9 +141,9 @@ def drain(fd, timeout):
             break
 
         write_all(sys.stdout.fileno(), chunk)
-        data += chunk
+        chunks.append(chunk)
 
-    return data
+    return b"".join(chunks)
 
 
 def reap_child(pid, force=False):

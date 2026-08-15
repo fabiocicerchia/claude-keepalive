@@ -123,7 +123,7 @@ class TestRunClaude(unittest.TestCase):
             status = 1
             try:
                 mod = load_module()
-                code, limit_hit, clean = mod.run_claude(
+                code, limit_hit, _clean = mod.run_claude(
                     [sys.executable, "-u", "-c", fake_script], ignore_initial=0
                 )
                 sys.stdout.write(f"\nRESULT code={code} limit={int(limit_hit)}\n")
@@ -163,7 +163,7 @@ class TestRunClaude(unittest.TestCase):
         self.assertEqual(limit, 0)
 
     def test_limit_banner_detected_and_child_stopped(self):
-        code, limit, output = self.run_wrapped(
+        _code, limit, output = self.run_wrapped(
             "import sys, time\n"
             "sys.stdout.write('hello from claude\\n')\n"
             'sys.stdout.write("\\x1b[33mYou\'ve hit your usage limit\\x1b[0m")\n'
