@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.3...v0.2.0) (2026-08-25)
+
+
+### Features
+
+* **docs:** build the docs site in Actions and drop Read the Docs ([#33](https://github.com/fabiocicerchia/claude-keepalive/issues/33)) ([9ed063d](https://github.com/fabiocicerchia/claude-keepalive/commit/9ed063d44cafa293f8afebd44a1492e978d817de))
+
 ## [0.1.3](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.2...v0.1.3) (2026-08-13)
 
 
