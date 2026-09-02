@@ -191,12 +191,8 @@ def exit_code(status):
     return 1
 
 
-def run_claude(command, ignore_initial=0):
-    global child_pid, child_fd
-
-    stdin_fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(stdin_fd)
-
+def spawn_claude(command):
+    # Returns in the parent only: the child either execs or exits here.
     pid, fd = pty.fork()
 
     if pid == 0:
@@ -208,53 +204,80 @@ def run_claude(command, ignore_initial=0):
             )
             os._exit(127)
 
-    child_pid = pid
-    child_fd = fd
+    return pid, fd
+
+
+def read_child(fd):
+    # Empty means the PTY closed: the child is gone either way.
+    try:
+        return os.read(fd, BUFFER_SIZE)
+    except OSError:
+        return b""
+
+
+def forward_stdin(stdin_fd, fd):
+    # False once our own stdin is at EOF and no longer worth selecting on.
+    data = os.read(stdin_fd, STDIN_READ_SIZE)
+
+    if not data:
+        return False
+
+    write_all(fd, data)
+    return True
+
+
+def pump(fd, stdin_fd, ignore_initial):
+    """Shuttle bytes until the child closes or the limit banner shows up.
+
+    Returns (tail, limit_hit): the last BUFFER_SIZE bytes seen from the child,
+    and whether the run stopped because the limit banner was matched in them.
+    """
     buffer = b""
     seen = 0
-    limit_hit = False
     watch_stdin = True
+
+    while True:
+        fds = [fd, stdin_fd] if watch_stdin else [fd]
+        ready, _, _ = select.select(fds, [], [], 0.2)
+
+        if fd in ready:
+            data = read_child(fd)
+
+            if not data:
+                return buffer, False
+
+            write_all(sys.stdout.fileno(), data)
+            seen += len(data)
+            # A resumed session's replayed history is forwarded but not matched.
+            armed = seen > ignore_initial
+
+            if armed:
+                buffer = (buffer + data)[-BUFFER_SIZE:]
+
+            if armed and found_limit(strip_ansi(buffer)):
+                buffer = (buffer + drain(fd, LIMIT_DRAIN_SECONDS))[-BUFFER_SIZE:]
+                return buffer, True
+
+        if watch_stdin and stdin_fd in ready:
+            watch_stdin = forward_stdin(stdin_fd, fd)
+
+
+def run_claude(command, ignore_initial=0):
+    global child_pid, child_fd
+
+    stdin_fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(stdin_fd)
+
+    pid, fd = spawn_claude(command)
+    child_pid = pid
+    child_fd = fd
 
     sync_winsize()
     old_winch = signal.signal(signal.SIGWINCH, sync_winsize)
 
     try:
         tty.setraw(stdin_fd)
-
-        while True:
-            fds = [fd, stdin_fd] if watch_stdin else [fd]
-            ready, _, _ = select.select(fds, [], [], 0.2)
-
-            if fd in ready:
-                try:
-                    data = os.read(fd, BUFFER_SIZE)
-                except OSError:
-                    break
-
-                if not data:
-                    break
-
-                write_all(sys.stdout.fileno(), data)
-                seen += len(data)
-
-                if seen > ignore_initial:
-                    buffer = (buffer + data)[-BUFFER_SIZE:]
-
-                    if found_limit(strip_ansi(buffer)):
-                        limit_hit = True
-                        buffer = (buffer + drain(fd, LIMIT_DRAIN_SECONDS))[
-                            -BUFFER_SIZE:
-                        ]
-                        break
-
-            if watch_stdin and stdin_fd in ready:
-                data = os.read(stdin_fd, STDIN_READ_SIZE)
-
-                if not data:
-                    watch_stdin = False
-                    continue
-
-                write_all(fd, data)
+        buffer, limit_hit = pump(fd, stdin_fd, ignore_initial)
     finally:
         signal.signal(signal.SIGWINCH, old_winch)
         termios.tcsetattr(stdin_fd, termios.TCSADRAIN, old_settings)
