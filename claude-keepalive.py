@@ -21,10 +21,15 @@ import tty
 from datetime import datetime, timedelta
 
 BUFFER_SIZE = 4096
+STDIN_READ_SIZE = 1024
 IGNORE_INITIAL_BYTES = 8192
 LIMIT_DRAIN_SECONDS = 2.0
 RESET_MARGIN_SECONDS = 60
 FALLBACK_WAIT_SECONDS = 30 * 60
+# REAP_POLL_ATTEMPTS x REAP_POLL_SECONDS is the grace a child gets after
+# SIGTERM before SIGKILL: 5 seconds.
+REAP_POLL_ATTEMPTS = 50
+REAP_POLL_SECONDS = 0.1
 
 # Wording differs across claude versions and limit types; compare lowercase.
 LIMIT_PHRASES = (
@@ -153,7 +158,7 @@ def reap_child(pid, force=False):
         except ProcessLookupError:
             pass
 
-        for _ in range(50):
+        for _ in range(REAP_POLL_ATTEMPTS):
             try:
                 done, status = os.waitpid(pid, os.WNOHANG)
             except ChildProcessError:
@@ -162,7 +167,7 @@ def reap_child(pid, force=False):
             if done:
                 return status
 
-            time.sleep(0.1)
+            time.sleep(REAP_POLL_SECONDS)
 
         try:
             os.kill(pid, signal.SIGKILL)
@@ -244,7 +249,7 @@ def run_claude(command, ignore_initial=0):
                         break
 
             if watch_stdin and stdin_fd in ready:
-                data = os.read(stdin_fd, 1024)
+                data = os.read(stdin_fd, STDIN_READ_SIZE)
 
                 if not data:
                     watch_stdin = False
