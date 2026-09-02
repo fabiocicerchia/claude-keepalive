@@ -27,6 +27,10 @@ then (plus a small margin), and resumes automatically — so an overnight limit
 doesn't require any manual restart. `Ctrl-C` is forwarded to claude while it
 runs (press twice to quit it); during the wait, `Ctrl-C` stops the wrapper.
 
+The wrapper exits with claude's own exit code. Its own refusals are separate:
+`64` when stdin is not a TTY (it needs a terminal to wrap) and `127` when the
+`claude` binary is not on your `PATH`.
+
 ## Test
 
 ```sh
