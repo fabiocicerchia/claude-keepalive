@@ -57,15 +57,20 @@ child_pid = None
 child_fd = None
 
 
+def signal_child(pid, sig):
+    # Every send races the child's own exit; losing that race is not an error.
+    try:
+        os.kill(pid, sig)
+    except ProcessLookupError:
+        pass
+
+
 def forward_signal(sig, frame):
     if child_pid is None:
         # No child (e.g. sleeping until the reset): stop the wrapper itself.
         raise SystemExit(128 + sig)
 
-    try:
-        os.kill(child_pid, sig)
-    except ProcessLookupError:
-        pass
+    signal_child(child_pid, sig)
 
 
 def sync_winsize(signum=None, frame=None):
@@ -153,10 +158,7 @@ def drain(fd, timeout):
 
 def reap_child(pid, force=False):
     if force:
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
+        signal_child(pid, signal.SIGTERM)
 
         for _ in range(REAP_POLL_ATTEMPTS):
             try:
@@ -169,10 +171,7 @@ def reap_child(pid, force=False):
 
             time.sleep(REAP_POLL_SECONDS)
 
-        try:
-            os.kill(pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
+        signal_child(pid, signal.SIGKILL)
 
     try:
         _, status = os.waitpid(pid, 0)
