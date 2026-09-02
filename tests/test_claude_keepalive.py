@@ -3,6 +3,7 @@ import os
 import pty
 import re
 import select
+import subprocess
 import sys
 import time
 import unittest
@@ -111,6 +112,19 @@ class TestResumePattern(unittest.TestCase):
 
     def test_rejects_partial_id(self):
         self.assertIsNone(MOD.RESUME_PATTERN.search("claude --resume abc123"))
+
+
+class TestTtyRefusal(unittest.TestCase):
+    def test_exits_ex_usage_without_a_tty(self):
+        result = subprocess.run(
+            [sys.executable, MODULE_PATH],
+            stdin=subprocess.DEVNULL,
+            capture_output=True,
+            timeout=30,
+            check=False,
+        )
+        self.assertEqual(result.returncode, os.EX_USAGE)
+        self.assertIn(b"stdin must be a TTY", result.stderr)
 
 
 class TestRunClaude(unittest.TestCase):

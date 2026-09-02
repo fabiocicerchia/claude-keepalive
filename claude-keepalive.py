@@ -20,6 +20,11 @@ import time
 import tty
 from datetime import datetime, timedelta
 
+# Exit codes. sysexits(3) where one fits; the child's own code is passed
+# through unchanged, so only the wrapper's own refusals are listed here.
+EXIT_NOT_A_TTY = os.EX_USAGE  # 64 — no PTY to wrap, so nothing to do
+EXIT_CANNOT_LAUNCH = 127  # `claude` is not on PATH
+
 BUFFER_SIZE = 4096
 STDIN_READ_SIZE = 1024
 IGNORE_INITIAL_BYTES = 8192
@@ -202,7 +207,7 @@ def spawn_claude(command):
             os.write(
                 2, b"claude-keepalive: cannot launch " + command[0].encode() + b"\r\n"
             )
-            os._exit(127)
+            os._exit(EXIT_CANNOT_LAUNCH)
 
     return pid, fd
 
@@ -303,7 +308,7 @@ def main():
 
     if not sys.stdin.isatty():
         print("claude-keepalive: stdin must be a TTY", file=sys.stderr)
-        return 1
+        return EXIT_NOT_A_TTY
 
     signal.signal(signal.SIGINT, forward_signal)
     signal.signal(signal.SIGTERM, forward_signal)
