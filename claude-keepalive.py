@@ -20,11 +20,21 @@ import time
 import tty
 from datetime import datetime, timedelta
 
+# Exit codes. sysexits(3) where one fits; the child's own code is passed
+# through unchanged, so only the wrapper's own refusals are listed here.
+EXIT_NOT_A_TTY = os.EX_USAGE  # 64 — no PTY to wrap, so nothing to do
+EXIT_CANNOT_LAUNCH = 127  # `claude` is not on PATH
+
 BUFFER_SIZE = 4096
+STDIN_READ_SIZE = 1024
 IGNORE_INITIAL_BYTES = 8192
 LIMIT_DRAIN_SECONDS = 2.0
 RESET_MARGIN_SECONDS = 60
 FALLBACK_WAIT_SECONDS = 30 * 60
+# REAP_POLL_ATTEMPTS x REAP_POLL_SECONDS is the grace a child gets after
+# SIGTERM before SIGKILL: 5 seconds.
+REAP_POLL_ATTEMPTS = 50
+REAP_POLL_SECONDS = 0.1
 
 # Wording differs across claude versions and limit types; compare lowercase.
 LIMIT_PHRASES = (
@@ -52,15 +62,20 @@ child_pid = None
 child_fd = None
 
 
+def signal_child(pid, sig):
+    # Every send races the child's own exit; losing that race is not an error.
+    try:
+        os.kill(pid, sig)
+    except ProcessLookupError:
+        pass
+
+
 def forward_signal(sig, frame):
     if child_pid is None:
         # No child (e.g. sleeping until the reset): stop the wrapper itself.
         raise SystemExit(128 + sig)
 
-    try:
-        os.kill(child_pid, sig)
-    except ProcessLookupError:
-        pass
+    signal_child(child_pid, sig)
 
 
 def sync_winsize(signum=None, frame=None):
@@ -148,12 +163,9 @@ def drain(fd, timeout):
 
 def reap_child(pid, force=False):
     if force:
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except ProcessLookupError:
-            pass
+        signal_child(pid, signal.SIGTERM)
 
-        for _ in range(50):
+        for _ in range(REAP_POLL_ATTEMPTS):
             try:
                 done, status = os.waitpid(pid, os.WNOHANG)
             except ChildProcessError:
@@ -162,12 +174,9 @@ def reap_child(pid, force=False):
             if done:
                 return status
 
-            time.sleep(0.1)
+            time.sleep(REAP_POLL_SECONDS)
 
-        try:
-            os.kill(pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
+        signal_child(pid, signal.SIGKILL)
 
     try:
         _, status = os.waitpid(pid, 0)
@@ -187,12 +196,8 @@ def exit_code(status):
     return 1
 
 
-def run_claude(command, ignore_initial=0):
-    global child_pid, child_fd
-
-    stdin_fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(stdin_fd)
-
+def spawn_claude(command):
+    # Returns in the parent only: the child either execs or exits here.
     pid, fd = pty.fork()
 
     if pid == 0:
@@ -202,55 +207,82 @@ def run_claude(command, ignore_initial=0):
             os.write(
                 2, b"claude-keepalive: cannot launch " + command[0].encode() + b"\r\n"
             )
-            os._exit(127)
+            os._exit(EXIT_CANNOT_LAUNCH)
 
-    child_pid = pid
-    child_fd = fd
+    return pid, fd
+
+
+def read_child(fd):
+    # Empty means the PTY closed: the child is gone either way.
+    try:
+        return os.read(fd, BUFFER_SIZE)
+    except OSError:
+        return b""
+
+
+def forward_stdin(stdin_fd, fd):
+    # False once our own stdin is at EOF and no longer worth selecting on.
+    data = os.read(stdin_fd, STDIN_READ_SIZE)
+
+    if not data:
+        return False
+
+    write_all(fd, data)
+    return True
+
+
+def pump(fd, stdin_fd, ignore_initial):
+    """Shuttle bytes until the child closes or the limit banner shows up.
+
+    Returns (tail, limit_hit): the last BUFFER_SIZE bytes seen from the child,
+    and whether the run stopped because the limit banner was matched in them.
+    """
     buffer = b""
     seen = 0
-    limit_hit = False
     watch_stdin = True
+
+    while True:
+        fds = [fd, stdin_fd] if watch_stdin else [fd]
+        ready, _, _ = select.select(fds, [], [], 0.2)
+
+        if fd in ready:
+            data = read_child(fd)
+
+            if not data:
+                return buffer, False
+
+            write_all(sys.stdout.fileno(), data)
+            seen += len(data)
+            # A resumed session's replayed history is forwarded but not matched.
+            armed = seen > ignore_initial
+
+            if armed:
+                buffer = (buffer + data)[-BUFFER_SIZE:]
+
+            if armed and found_limit(strip_ansi(buffer)):
+                buffer = (buffer + drain(fd, LIMIT_DRAIN_SECONDS))[-BUFFER_SIZE:]
+                return buffer, True
+
+        if watch_stdin and stdin_fd in ready:
+            watch_stdin = forward_stdin(stdin_fd, fd)
+
+
+def run_claude(command, ignore_initial=0):
+    global child_pid, child_fd
+
+    stdin_fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(stdin_fd)
+
+    pid, fd = spawn_claude(command)
+    child_pid = pid
+    child_fd = fd
 
     sync_winsize()
     old_winch = signal.signal(signal.SIGWINCH, sync_winsize)
 
     try:
         tty.setraw(stdin_fd)
-
-        while True:
-            fds = [fd, stdin_fd] if watch_stdin else [fd]
-            ready, _, _ = select.select(fds, [], [], 0.2)
-
-            if fd in ready:
-                try:
-                    data = os.read(fd, BUFFER_SIZE)
-                except OSError:
-                    break
-
-                if not data:
-                    break
-
-                write_all(sys.stdout.fileno(), data)
-                seen += len(data)
-
-                if seen > ignore_initial:
-                    buffer = (buffer + data)[-BUFFER_SIZE:]
-
-                    if found_limit(strip_ansi(buffer)):
-                        limit_hit = True
-                        buffer = (buffer + drain(fd, LIMIT_DRAIN_SECONDS))[
-                            -BUFFER_SIZE:
-                        ]
-                        break
-
-            if watch_stdin and stdin_fd in ready:
-                data = os.read(stdin_fd, 1024)
-
-                if not data:
-                    watch_stdin = False
-                    continue
-
-                write_all(fd, data)
+        buffer, limit_hit = pump(fd, stdin_fd, ignore_initial)
     finally:
         signal.signal(signal.SIGWINCH, old_winch)
         termios.tcsetattr(stdin_fd, termios.TCSADRAIN, old_settings)
@@ -276,7 +308,7 @@ def main():
 
     if not sys.stdin.isatty():
         print("claude-keepalive: stdin must be a TTY", file=sys.stderr)
-        return 1
+        return EXIT_NOT_A_TTY
 
     signal.signal(signal.SIGINT, forward_signal)
     signal.signal(signal.SIGTERM, forward_signal)
