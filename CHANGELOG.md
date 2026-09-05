@@ -6,40 +6,35 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.2.1](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.2.0...v0.2.1) (2026-08-29)
 
-
 ### Bug Fixes
 
-* unblock quality and clear the Scorecard pinned-dependencies finding ([#38](https://github.com/fabiocicerchia/claude-keepalive/issues/38)) ([76079fb](https://github.com/fabiocicerchia/claude-keepalive/commit/76079fb60236d6014e3274386b2f4a9126d8f091))
+- unblock quality and clear the Scorecard pinned-dependencies finding ([#38](https://github.com/fabiocicerchia/claude-keepalive/issues/38)) ([76079fb](https://github.com/fabiocicerchia/claude-keepalive/commit/76079fb60236d6014e3274386b2f4a9126d8f091))
 
 ## [0.2.0](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.3...v0.2.0) (2026-08-25)
 
-
 ### Features
 
-* **docs:** build the docs site in Actions and drop Read the Docs ([#33](https://github.com/fabiocicerchia/claude-keepalive/issues/33)) ([9ed063d](https://github.com/fabiocicerchia/claude-keepalive/commit/9ed063d44cafa293f8afebd44a1492e978d817de))
+- **docs:** build the docs site in Actions and drop Read the Docs ([#33](https://github.com/fabiocicerchia/claude-keepalive/issues/33)) ([9ed063d](https://github.com/fabiocicerchia/claude-keepalive/commit/9ed063d44cafa293f8afebd44a1492e978d817de))
 
 ## [0.1.3](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.2...v0.1.3) (2026-08-13)
 
-
 ### Bug Fixes
 
-* security and code-quality findings ([#28](https://github.com/fabiocicerchia/claude-keepalive/issues/28)) ([d41155f](https://github.com/fabiocicerchia/claude-keepalive/commit/d41155f80795e90bb4ffd99595523167bc398ce8))
+- security and code-quality findings ([#28](https://github.com/fabiocicerchia/claude-keepalive/issues/28)) ([d41155f](https://github.com/fabiocicerchia/claude-keepalive/commit/d41155f80795e90bb4ffd99595523167bc398ce8))
 
 ## [0.1.2](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.1...v0.1.2) (2026-08-06)
 
-
 ### Bug Fixes
 
-* **ci:** install pytest even when the package has no [dev] extra ([d37c1e5](https://github.com/fabiocicerchia/claude-keepalive/commit/d37c1e5d75cb3c80a4a420cafb89aa5c6f1394b1))
-* **pre-commit:** stop check-yaml failing on Helm templates and multi-doc manifests ([ba2dccd](https://github.com/fabiocicerchia/claude-keepalive/commit/ba2dccd23c402081f03f0bc2ca9e2728414af083))
-* **security:** skip the SARIF upload on private repos ([2472866](https://github.com/fabiocicerchia/claude-keepalive/commit/2472866533ceb19676dec8f7951fa1418512d6ef))
+- **ci:** install pytest even when the package has no [dev] extra ([d37c1e5](https://github.com/fabiocicerchia/claude-keepalive/commit/d37c1e5d75cb3c80a4a420cafb89aa5c6f1394b1))
+- **pre-commit:** stop check-yaml failing on Helm templates and multi-doc manifests ([ba2dccd](https://github.com/fabiocicerchia/claude-keepalive/commit/ba2dccd23c402081f03f0bc2ca9e2728414af083))
+- **security:** skip the SARIF upload on private repos ([2472866](https://github.com/fabiocicerchia/claude-keepalive/commit/2472866533ceb19676dec8f7951fa1418512d6ef))
 
 ## [0.1.1](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.1.0...v0.1.1) (2026-07-30)
 
-
 ### Bug Fixes
 
-* make limit detection and auto-resume work reliably ([#6](https://github.com/fabiocicerchia/claude-keepalive/issues/6)) ([067f228](https://github.com/fabiocicerchia/claude-keepalive/commit/067f2287504b5863ffce5e0ad01b106085942d2f))
+- make limit detection and auto-resume work reliably ([#6](https://github.com/fabiocicerchia/claude-keepalive/issues/6)) ([067f228](https://github.com/fabiocicerchia/claude-keepalive/commit/067f2287504b5863ffce5e0ad01b106085942d2f))
 
 ## [Unreleased]
 
