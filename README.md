@@ -49,6 +49,31 @@ Requires Python 3 and the [`claude`](https://docs.claude.com/en/docs/claude-code
 `Ctrl-C` is forwarded to claude (press twice to quit it, which also stops the
 wrapper). While waiting for the reset, `Ctrl-C` stops the wrapper.
 
+## Development
+
+`make help` lists every target. Every repository in this estate exposes the
+same eight verbs, so you do not have to read a Makefile to find out how to
+test it (FC-GEN-057).
+
+| Verb      | What it does here                                          |
+| --------- | ---------------------------------------------------------- |
+| `setup`   | Install the pre-commit hook                                |
+| `install` | Copy this checkout into `DEST` (default `~/.local/bin`)    |
+| `run`     | `./claude-keepalive.py`, with `ARGS` passed through        |
+| `test`    | `python3 -m unittest discover -s tests`                    |
+| `lint`    | `pre-commit run --all-files` — the whole gate              |
+| `format`  | `ruff format .`                                            |
+| `analyze` | `trivy fs` — vulnerabilities, misconfig, secrets           |
+
+`make install` installs the checkout in front of you;
+[`install.sh`](install.sh) is the one-liner that fetches the script from
+`main`.
+
+### Not applicable
+
+- `build` — one standard-library script, so there is nothing to compile. It
+  exits 0 and says so rather than pretending to work (FC-GEN-058).
+
 ## Documentation
 
 Full docs live in [`docs/`](docs/). Runnable examples live in [`examples/`](examples/).
