@@ -13,14 +13,18 @@ library only — no dependencies.
 ## Commands
 
 ```sh
-# run:  ./claude-keepalive.py [--resume <session-id>]
-# lint: pre-commit run --all-files   (or: make lint)
-# test: make test
-make help    # Show this help
-make setup   # Install the pre-commit hook
-make lint    # Run all pre-commit checks on the whole tree
-make test    # Run tests
+make help     # Show this help
+make setup    # Install the pre-commit hook
+make install  # Copy this checkout into DEST (default ~/.local/bin)
+make run      # ./claude-keepalive.py, ARGS="--resume <session-id>"
+make test     # python3 -m unittest discover -s tests
+make lint     # pre-commit run --all-files — the whole gate
+make format   # ruff format .
+make analyze  # trivy fs
 ```
+
+`build` is a declared no-op here (FC-GEN-058): one standard-library script,
+nothing to compile.
 
 ## Tooling
 
