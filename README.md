@@ -55,15 +55,15 @@ wrapper). While waiting for the reset, `Ctrl-C` stops the wrapper.
 same eight verbs, so you do not have to read a Makefile to find out how to
 test it (FC-GEN-057).
 
-| Verb      | What it does here                                          |
-| --------- | ---------------------------------------------------------- |
-| `setup`   | Install the pre-commit hook                                |
-| `install` | Copy this checkout into `DEST` (default `~/.local/bin`)    |
-| `run`     | `./claude-keepalive.py`, with `ARGS` passed through        |
-| `test`    | `python3 -m unittest discover -s tests`                    |
-| `lint`    | `pre-commit run --all-files` — the whole gate              |
-| `format`  | `ruff format .`                                            |
-| `analyze` | `trivy fs` — vulnerabilities, misconfig, secrets           |
+| Verb      | What it does here                                       |
+| --------- | ------------------------------------------------------- |
+| `setup`   | Install the pre-commit hook                             |
+| `install` | Copy this checkout into `DEST` (default `~/.local/bin`) |
+| `run`     | `./claude-keepalive.py`, with `ARGS` passed through     |
+| `test`    | `python3 -m unittest discover -s tests`                 |
+| `lint`    | `pre-commit run --all-files` — the whole gate           |
+| `format`  | `ruff format .`                                         |
+| `analyze` | `trivy fs` — vulnerabilities, misconfig, secrets        |
 
 `make install` installs the checkout in front of you;
 [`install.sh`](install.sh) is the one-liner that fetches the script from
