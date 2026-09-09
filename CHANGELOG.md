@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format is based
 on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.2.1...v0.3.0) (2026-09-09)
+
+
+### Features
+
+* **packaging:** make it installable, with a man page ([#57](https://github.com/fabiocicerchia/claude-keepalive/issues/57)) ([61d62ac](https://github.com/fabiocicerchia/claude-keepalive/commit/61d62acdb9599a0ee78fb99e563094b8ba354833))
+
+
+### Bug Fixes
+
+* **ci:** pin the editorconfig-checker binary version ([#47](https://github.com/fabiocicerchia/claude-keepalive/issues/47)) ([4163e67](https://github.com/fabiocicerchia/claude-keepalive/commit/4163e679e32ec1cc4e2b51af1d5be3c7031e75c5))
+
 ## [0.2.1](https://github.com/fabiocicerchia/claude-keepalive/compare/v0.2.0...v0.2.1) (2026-08-29)
 
 ### Bug Fixes
