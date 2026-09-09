@@ -1,6 +1,6 @@
 # Architecture
 
-Single file, `claude-keepalive.py`. No dependencies.
+Single file, `claude_keepalive.py`. No dependencies.
 
 ## Overview
 

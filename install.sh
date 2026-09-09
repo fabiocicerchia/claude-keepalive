@@ -5,7 +5,7 @@ set -euo pipefail
 
 DEST="${DEST:-$HOME/.local/bin}"
 mkdir -p "$DEST"
-curl -fsSL "https://raw.githubusercontent.com/fabiocicerchia/claude-keepalive/main/claude-keepalive.py" \
+curl -fsSL "https://raw.githubusercontent.com/fabiocicerchia/claude-keepalive/main/claude_keepalive.py" \
   -o "$DEST/claude-keepalive"
 chmod +x "$DEST/claude-keepalive"
 

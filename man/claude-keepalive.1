@@ -1,0 +1,38 @@
+.TH CLAUDE\-KEEPALIVE 1 "2026-09" "claude-keepalive" "User Commands"
+.SH NAME
+claude-keepalive \- run claude and auto-resume after a usage-limit reset
+.SH SYNOPSIS
+.B claude-keepalive
+.RB [ \-\-resume
+.IR SESSION_ID ]
+.SH DESCRIPTION
+Runs
+.B claude
+under a pseudo-terminal, watches its output for a usage limit, and resumes
+the session automatically once the stated reset time has passed \(em rather
+than leaving a long task stopped until someone notices.
+.PP
+Signals and terminal size changes are forwarded to the child, so it behaves
+like running the command directly.
+.SH OPTIONS
+.TP
+.BI \-\-resume " SESSION_ID"
+Resume an existing Claude session by id.
+.SH EXIT STATUS
+The exit status of the wrapped command.
+.SH EXAMPLES
+.PP
+Start a session that survives a limit reset:
+.PP
+.RS
+.B claude-keepalive
+.RE
+.PP
+Resume a known session:
+.PP
+.RS
+.B claude-keepalive \-\-resume 01H8Z...
+.RE
+.SH SEE ALSO
+Project documentation:
+https://github.com/fabiocicerchia/claude-keepalive

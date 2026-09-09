@@ -11,7 +11,7 @@ from datetime import datetime
 
 MODULE_PATH = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "claude-keepalive.py",
+    "claude_keepalive.py",
 )
 
 

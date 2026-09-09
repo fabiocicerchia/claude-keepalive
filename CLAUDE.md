@@ -4,7 +4,7 @@ Guidance for Claude Code (and other AI agents) working in this repo.
 
 ## Project
 
-`claude-keepalive` is a single-file Python 3 CLI (`claude-keepalive.py`) that
+`claude-keepalive` is a single-file Python 3 CLI (`claude_keepalive.py`) that
 wraps the `claude` binary in a PTY. It forwards the interactive session
 through, watches the output for the session-limit message, waits until the
 reset time, then relaunches with `--resume <id>` (or `--continue`). Standard
@@ -16,7 +16,7 @@ library only — no dependencies.
 make help     # Show this help
 make setup    # Install the pre-commit hook
 make install  # Copy this checkout into DEST (default ~/.local/bin)
-make run      # ./claude-keepalive.py, ARGS="--resume <session-id>"
+make run      # ./claude_keepalive.py, ARGS="--resume <session-id>"
 make test     # python3 -m unittest discover -s tests
 make lint     # pre-commit run --all-files — the whole gate
 make format   # ruff format .
