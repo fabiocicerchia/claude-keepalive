@@ -16,10 +16,10 @@ cd claude-keepalive
 
 ```sh
 # Fresh session, kept alive across the limit reset:
-./claude-keepalive.py
+./claude_keepalive.py
 
 # Resume an existing session:
-./claude-keepalive.py --resume <session-id>
+./claude_keepalive.py --resume <session-id>
 ```
 
 When the session limit is hit, the wrapper prints the reset time, sleeps until

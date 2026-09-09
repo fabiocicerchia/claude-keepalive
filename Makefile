@@ -20,13 +20,11 @@ setup: ## Install the pre-commit hook
 
 # install.sh curls the script off main, which is right for a one-liner from
 # the README and wrong here: this installs the checkout you are looking at.
-install: ## Install this checkout into DEST (default ~/.local/bin)
-	mkdir -p $(DEST)
-	install -m 0755 claude-keepalive.py $(DEST)/claude-keepalive
-	@echo "installed $(DEST)/claude-keepalive"
+install: ## Install the package (and its man page) with pip
+	pip install .
 
 run: ## Run it from the checkout (make run ARGS="--resume <id>")
-	./claude-keepalive.py $(ARGS)
+	./claude_keepalive.py $(ARGS)
 
 test: ## Run tests
 	python3 -m unittest discover -s tests

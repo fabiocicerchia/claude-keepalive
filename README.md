@@ -40,10 +40,10 @@ Requires Python 3 and the [`claude`](https://docs.claude.com/en/docs/claude-code
 
 ```sh
 # Start a fresh session and keep it alive across the limit reset:
-./claude-keepalive.py
+./claude_keepalive.py
 
 # Resume a specific session id:
-./claude-keepalive.py --resume <session-id>
+./claude_keepalive.py --resume <session-id>
 ```
 
 `Ctrl-C` is forwarded to claude (press twice to quit it, which also stops the
@@ -59,7 +59,7 @@ test it (FC-GEN-057).
 | --------- | ------------------------------------------------------- |
 | `setup`   | Install the pre-commit hook                             |
 | `install` | Copy this checkout into `DEST` (default `~/.local/bin`) |
-| `run`     | `./claude-keepalive.py`, with `ARGS` passed through     |
+| `run`     | `./claude_keepalive.py`, with `ARGS` passed through     |
 | `test`    | `python3 -m unittest discover -s tests`                 |
 | `lint`    | `pre-commit run --all-files` — the whole gate           |
 | `format`  | `ruff format .`                                         |
