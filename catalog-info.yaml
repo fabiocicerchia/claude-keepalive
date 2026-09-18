@@ -1,0 +1,23 @@
+# Backstage catalog entry, read by paved's scorecard plugin.
+#
+# Every check paved scores is derived from this file alone — no cluster
+# access, no CI credentials. What is absent here is absent from the score.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: claude-keepalive
+  description: >-
+      Lightweight script that prevents Claude AI sessions from timing out during long autonomous tasks by
+      sending periodic keep-alive pings.
+  annotations:
+    github.com/project-slug: fabiocicerchia/claude-keepalive
+    backstage.io/source-location: url:https://github.com/fabiocicerchia/claude-keepalive/
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://github.com/fabiocicerchia/claude-keepalive
+      title: Source
+spec:
+  type: library
+  lifecycle: production
+  owner: group:default/kodebeat
+  system: oss-tools
