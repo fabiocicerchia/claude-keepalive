@@ -1,0 +1,627 @@
+{
+ "excluded": {
+  "claude-keepalive/claude-keepalive": [
+   {
+    "candidate": "Output keeps being forwarded for 2 seconds after the limit phrase to catch the reset time",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "claude_keepalive.py#drain"
+   },
+   {
+    "candidate": "Only the last 4096 bytes of output are searched for the banner, reset time and session id",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "claude_keepalive.py#pump"
+   },
+   {
+    "candidate": "Stdin at EOF stops being forwarded while claude keeps running",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "claude_keepalive.py#forward_stdin"
+   },
+   {
+    "candidate": "Signals sent after the child has already exited are ignored",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "claude_keepalive.py#signal_child"
+   },
+   {
+    "candidate": "An already-reaped child yields exit code 0",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "claude_keepalive.py#reap_child"
+   },
+   {
+    "candidate": "SIGTERM then SIGKILL after 5 s for a stuck claude after a limit",
+    "covered_by": "keepalive.limit.banner-recognised",
+    "reason": "DUPLICATE_OF",
+    "source": "claude_keepalive.py#reap_child"
+   },
+   {
+    "candidate": "OSC (window title, hyperlink) sequences are stripped before matching",
+    "covered_by": "keepalive.limit.banner-recognised",
+    "reason": "DUPLICATE_OF",
+    "source": "claude_keepalive.py#strip_ansi"
+   },
+   {
+    "candidate": "--help output from argparse",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "claude_keepalive.py#main"
+   },
+   {
+    "candidate": "Invalid reset hour/minute permutations",
+    "covered_by": "keepalive.reset.fallback-wait",
+    "reason": "DUPLICATE_OF",
+    "source": "claude_keepalive.py#parse_reset"
+   }
+  ],
+  "claude-keepalive/install": [
+   {
+    "candidate": "The installer is fetched and piped to bash from the raw GitHub URL (usage comment)",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "install.sh#DEST"
+   },
+   {
+    "candidate": "curl runs silently (-sS) and follows redirects (-L)",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "install.sh#DEST"
+   },
+   {
+    "candidate": "Installed file is renamed from claude_keepalive.py to claude-keepalive",
+    "covered_by": "installation.installer.installs-executable-into-chosen-directory",
+    "reason": "DUPLICATE_OF",
+    "source": "install.sh#DEST"
+   },
+   {
+    "candidate": "Nested install directory is created when missing (mkdir -p)",
+    "covered_by": "installation.installer.installs-executable-into-chosen-directory",
+    "reason": "DUPLICATE_OF",
+    "source": "install.sh#DEST"
+   }
+  ],
+  "claude-keepalive/makefile": [
+   {
+    "candidate": "`make` with no target prints the help list of targets and descriptions",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#help"
+   },
+   {
+    "candidate": "make setup installs the pre-commit hook",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "Makefile#setup"
+   },
+   {
+    "candidate": "make run runs ./claude_keepalive.py from the checkout and passes ARGS through",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "Makefile#run"
+   },
+   {
+    "candidate": "make test runs the unittest suite under tests/",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "Makefile#test"
+   },
+   {
+    "candidate": "make lint runs every pre-commit hook on every file",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#lint"
+   },
+   {
+    "candidate": "make format runs ruff format",
+    "covered_by": "",
+    "reason": "TECH_DEVTOOLING",
+    "source": "Makefile#format"
+   },
+   {
+    "candidate": "make analyze refuses with exit 69 and an install link when trivy is missing, otherwise scans for CRITICAL/HIGH vulnerabilities, misconfigurations and secrets",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#analyze"
+   },
+   {
+    "candidate": "make build is a declared no-op that prints why there is nothing to build",
+    "covered_by": "",
+    "reason": "TECH_BUILD",
+    "source": "Makefile#build"
+   }
+  ],
+  "docs/stylesheets": [
+   {
+    "candidate": "Header is translucent and blurred with a hairline divider and shadow on scroll",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docs/stylesheets/extra.css#.md-header"
+   },
+   {
+    "candidate": "Tabs dimmed until hovered or active",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-tabs__link"
+   },
+   {
+    "candidate": "Heading weights, letter-spacing and kerning",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset h1"
+   },
+   {
+    "candidate": "Rounded, bordered code blocks",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset .highlight"
+   },
+   {
+    "candidate": "Pill-shaped buttons with gradient primary and lift on hover",
+    "covered_by": "docs.brand.single-accent-pair-shared",
+    "reason": "DUPLICATE_OF",
+    "source": "docs/stylesheets/extra.css#.md-typeset .md-button"
+   },
+   {
+    "candidate": "Home hero title in accent gradient with centred tagline and spaced buttons",
+    "covered_by": "docs.brand.single-accent-pair-shared",
+    "reason": "DUPLICATE_OF",
+    "source": "docs/stylesheets/extra.css#.md-typeset .hero"
+   },
+   {
+    "candidate": "Feature cards with rounded border, hover lift and accent-coloured icons",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-typeset .grid.cards > ul > li"
+   },
+   {
+    "candidate": "Bold nav title and active nav link",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-nav__title"
+   },
+   {
+    "candidate": "Footer background, divider and muted link colour",
+    "covered_by": "",
+    "reason": "TRIVIAL",
+    "source": "docs/stylesheets/extra.css#.md-footer-meta"
+   },
+   {
+    "candidate": "Smooth scrolling for in-page anchors",
+    "covered_by": "",
+    "reason": "INTERNAL_MECHANISM",
+    "source": "docs/stylesheets/extra.css#html"
+   }
+  ]
+ },
+ "lifted": {
+  "claude-keepalive/claude-keepalive": [],
+  "claude-keepalive/install": [],
+  "claude-keepalive/makefile": [],
+  "docs/stylesheets": []
+ },
+ "retired": [],
+ "scenarios": {
+  "documentation-site.brand-theme.001": {
+   "file": "specs/documentation-site/brand-theme/docs-brand-theme.feature",
+   "fingerprint": "d1e8fee7d3b2",
+   "human": false,
+   "rule": "docs.brand.single-accent-pair-shared",
+   "source": "docs/stylesheets/extra.css#:root",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "documentation-site.brand-theme.002": {
+   "file": "specs/documentation-site/brand-theme/docs-brand-theme.feature",
+   "fingerprint": "433084a194b6",
+   "human": false,
+   "rule": "docs.brand.scheme-legible-link-colour",
+   "source": "docs/stylesheets/extra.css#[data-md-color-scheme=\"slate\"]",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "documentation-site.brand-theme.003": {
+   "file": "specs/documentation-site/brand-theme/docs-brand-theme.feature",
+   "fingerprint": "c702704e5aae",
+   "human": false,
+   "rule": "docs.brand.no-placeholder-logo",
+   "source": "docs/stylesheets/extra.css#.md-header__button.md-logo",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "documentation-site.brand-theme.004": {
+   "file": "specs/documentation-site/brand-theme/docs-brand-theme.feature",
+   "fingerprint": "d1e8fee7d3b2",
+   "human": false,
+   "rule": "docs.brand.no-external-font-requests",
+   "source": "docs/stylesheets/extra.css#:root",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "documentation-site.brand-theme.005": {
+   "file": "specs/documentation-site/brand-theme/docs-brand-theme.feature",
+   "fingerprint": "721086d36c47",
+   "human": false,
+   "rule": "docs.content.wide-tables-not-clipped",
+   "source": "docs/stylesheets/extra.css#.md-typeset table:not([class])",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "installation.local-install.001": {
+   "file": "specs/installation/local-install/install-from-checkout.feature",
+   "fingerprint": "b8919e4a117d",
+   "human": false,
+   "rule": "installation.local-install.installs-checkout-as-package",
+   "source": "Makefile#install",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "installation.one-line-installer.001": {
+   "file": "specs/installation/one-line-installer/one-line-installer.feature",
+   "fingerprint": "5329ec015140",
+   "human": false,
+   "rule": "installation.installer.installs-executable-into-chosen-directory",
+   "source": "install.sh#DEST",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "installation.one-line-installer.002": {
+   "file": "specs/installation/one-line-installer/one-line-installer.feature",
+   "fingerprint": "5329ec015140",
+   "human": false,
+   "rule": "installation.installer.reinstall-replaces-with-latest-main",
+   "source": "install.sh#DEST",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "installation.one-line-installer.003": {
+   "file": "specs/installation/one-line-installer/one-line-installer.feature",
+   "fingerprint": "5329ec015140",
+   "human": false,
+   "rule": "installation.installer.download-failure-aborts",
+   "source": "install.sh#DEST",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "installation.path-guidance.001": {
+   "file": "specs/installation/path-guidance/install-path-guidance.feature",
+   "fingerprint": "5329ec015140",
+   "human": false,
+   "rule": "installation.path-guidance.hint-only-when-not-on-path",
+   "source": "install.sh#DEST",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "interactive-session.exit-and-cleanup.001": {
+   "file": "specs/interactive-session/exit-and-cleanup/wrapped-session-exit.feature",
+   "fingerprint": "2fa2f0ebcb4d",
+   "human": false,
+   "rule": "keepalive.exit.code-passed-through",
+   "source": "claude_keepalive.py#exit_code",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_normal_exit_passes_through_exit_code",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_normal_exit_passes_through_exit_code"
+   ]
+  },
+  "interactive-session.exit-and-cleanup.002": {
+   "file": "specs/interactive-session/exit-and-cleanup/wrapped-session-exit.feature",
+   "fingerprint": "14d18da72425",
+   "human": false,
+   "rule": "keepalive.interrupts.termination-forwarded-to-claude",
+   "source": "claude_keepalive.py#forward_signal",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "interactive-session.exit-and-cleanup.003": {
+   "file": "specs/interactive-session/exit-and-cleanup/wrapped-session-exit.feature",
+   "fingerprint": "14d18da72425",
+   "human": false,
+   "rule": "keepalive.interrupts.stop-while-waiting",
+   "source": "claude_keepalive.py#forward_signal",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "interactive-session.launch.001": {
+   "file": "specs/interactive-session/launch/wrapped-session-launch.feature",
+   "fingerprint": "7f3fd936ff9f",
+   "human": false,
+   "rule": "keepalive.launch.requires-terminal",
+   "source": "claude_keepalive.py#main",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_exits_ex_usage_without_a_tty",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_exits_ex_usage_without_a_tty"
+   ]
+  },
+  "interactive-session.launch.002": {
+   "file": "specs/interactive-session/launch/wrapped-session-launch.feature",
+   "fingerprint": "10e3cd013bb0",
+   "human": false,
+   "rule": "keepalive.launch.missing-claude-reported",
+   "source": "claude_keepalive.py#spawn_claude",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "interactive-session.launch.003": {
+   "file": "specs/interactive-session/launch/wrapped-session-launch.feature",
+   "fingerprint": "7f3fd936ff9f",
+   "human": false,
+   "rule": "keepalive.launch.resume-given-session",
+   "source": "claude_keepalive.py#main",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "interactive-session.launch.004": {
+   "file": "specs/interactive-session/launch/wrapped-session-launch.feature",
+   "fingerprint": "cf79a0806c96",
+   "human": false,
+   "rule": "keepalive.terminal.output-and-keys-pass-through",
+   "source": "claude_keepalive.py#pump",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_limit_banner_detected_and_child_stopped",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_limit_banner_detected_and_child_stopped"
+   ]
+  },
+  "interactive-session.launch.005": {
+   "file": "specs/interactive-session/launch/wrapped-session-launch.feature",
+   "fingerprint": "01726c9df10f",
+   "human": false,
+   "rule": "keepalive.terminal.window-size-follows-user",
+   "source": "claude_keepalive.py#sync_winsize",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "limit-recovery.auto-resume.001": {
+   "file": "specs/limit-recovery/auto-resume/automatic-resume.feature",
+   "fingerprint": "7f3fd936ff9f",
+   "human": false,
+   "rule": "keepalive.resume.same-conversation",
+   "source": "claude_keepalive.py#main",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_extracts_uuid",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_extracts_uuid",
+    "tests/test_claude_keepalive.py#test_rejects_partial_id"
+   ]
+  },
+  "limit-recovery.auto-resume.002": {
+   "file": "specs/limit-recovery/auto-resume/automatic-resume.feature",
+   "fingerprint": "7f3fd936ff9f",
+   "human": false,
+   "rule": "keepalive.resume.started-id-not-reused",
+   "source": "claude_keepalive.py#main",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "limit-recovery.limit-detection.001": {
+   "file": "specs/limit-recovery/limit-detection/usage-limit-detection.feature",
+   "fingerprint": "40380d55110a",
+   "human": false,
+   "rule": "keepalive.limit.banner-recognised",
+   "source": "claude_keepalive.py#found_limit",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_matches_known_phrases",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_matches_known_phrases",
+    "tests/test_claude_keepalive.py#test_is_case_insensitive",
+    "tests/test_claude_keepalive.py#test_strips_csi_sequences",
+    "tests/test_claude_keepalive.py#test_normalizes_curly_apostrophe",
+    "tests/test_claude_keepalive.py#test_limit_banner_detected_and_child_stopped"
+   ]
+  },
+  "limit-recovery.limit-detection.002": {
+   "file": "specs/limit-recovery/limit-detection/usage-limit-detection.feature",
+   "fingerprint": "40380d55110a",
+   "human": false,
+   "rule": "keepalive.limit.warnings-not-mistaken",
+   "source": "claude_keepalive.py#found_limit",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_ignores_approaching_warning",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_ignores_approaching_warning",
+    "tests/test_claude_keepalive.py#test_ignores_ordinary_output"
+   ]
+  },
+  "limit-recovery.limit-detection.003": {
+   "file": "specs/limit-recovery/limit-detection/usage-limit-detection.feature",
+   "fingerprint": "cf79a0806c96",
+   "human": false,
+   "rule": "keepalive.limit.replayed-history-ignored",
+   "source": "claude_keepalive.py#pump",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "limit-recovery.reset-scheduling.001": {
+   "file": "specs/limit-recovery/reset-scheduling/reset-time-waiting.feature",
+   "fingerprint": "ef4b9d84e5e3",
+   "human": false,
+   "rule": "keepalive.reset.wait-until-advertised-time",
+   "source": "claude_keepalive.py#seconds_until",
+   "status": "verified",
+   "test": "tests/test_claude_keepalive.py#test_hour_only",
+   "tests": [
+    "tests/test_claude_keepalive.py#test_hour_only",
+    "tests/test_claude_keepalive.py#test_hour_and_minutes",
+    "tests/test_claude_keepalive.py#test_will_reset_at_variant",
+    "tests/test_claude_keepalive.py#test_resets_at_variant",
+    "tests/test_claude_keepalive.py#test_future_same_day",
+    "tests/test_claude_keepalive.py#test_past_rolls_to_next_day",
+    "tests/test_claude_keepalive.py#test_midnight"
+   ]
+  },
+  "limit-recovery.reset-scheduling.002": {
+   "file": "specs/limit-recovery/reset-scheduling/reset-time-waiting.feature",
+   "fingerprint": "7f3fd936ff9f",
+   "human": false,
+   "rule": "keepalive.reset.fallback-wait",
+   "source": "claude_keepalive.py#main",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  },
+  "limit-recovery.status-messages.001": {
+   "file": "specs/limit-recovery/status-messages/limit-status-messages.feature",
+   "fingerprint": "7f3fd936ff9f",
+   "human": false,
+   "rule": "keepalive.status.limit-and-wait-announced",
+   "source": "claude_keepalive.py#main",
+   "status": "inferred",
+   "test": "",
+   "tests": []
+  }
+ },
+ "taxonomy": {
+  "domains": [
+   {
+    "areas": [
+     {
+      "description": "Starting claude in a pseudo-terminal, optionally resuming a given session id, and refusing to run without a TTY or when claude is missing.",
+      "slug": "launch",
+      "title": "Launch & startup"
+     },
+     {
+      "description": "Forwarding keystrokes to claude and its output back to the screen in raw mode without loss.",
+      "slug": "terminal-passthrough",
+      "title": "Terminal passthrough"
+     },
+     {
+      "description": "Keeping claude's terminal size in sync when the user's window is resized.",
+      "slug": "window-resize",
+      "title": "Window resizing"
+     },
+     {
+      "description": "Passing Ctrl-C and termination requests through to claude so the user stays in control.",
+      "slug": "interrupts",
+      "title": "Interrupts & signals"
+     },
+     {
+      "description": "Waiting for claude to finish, cleaning up stuck processes, and returning its exit code unchanged.",
+      "slug": "exit-and-cleanup",
+      "title": "Exit & cleanup"
+     }
+    ],
+    "description": "Running Claude Code through the wrapper so it feels exactly like using claude directly.",
+    "slug": "interactive-session",
+    "title": "Interactive Session"
+   },
+   {
+    "areas": [
+     {
+      "description": "Spotting the session/usage-limit message across claude versions, ignoring colour codes and replayed history.",
+      "slug": "limit-detection",
+      "title": "Limit detection"
+     },
+     {
+      "description": "Reading the advertised reset time, adding a safety margin or falling back to a default wait, and sleeping until then.",
+      "slug": "reset-scheduling",
+      "title": "Reset-time waiting"
+     },
+     {
+      "description": "Relaunching claude on the same conversation by session id, or continuing the latest one when no id is shown.",
+      "slug": "auto-resume",
+      "title": "Automatic resume"
+     },
+     {
+      "description": "Telling the user that the limit was hit, when it resets, how long the wait is, and when resuming starts.",
+      "slug": "status-messages",
+      "title": "Status messages"
+     }
+    ],
+    "description": "Noticing when Claude hits a usage or session limit and picking the conversation back up automatically once it resets.",
+    "slug": "limit-recovery",
+    "title": "Usage-Limit Recovery"
+   },
+   {
+    "areas": [
+     {
+      "description": "A curl-pipe script that downloads the tool into a chosen directory and makes it executable.",
+      "slug": "one-line-installer",
+      "title": "One-line installer"
+     },
+     {
+      "description": "Copying a local checkout into the install directory with make.",
+      "slug": "local-install",
+      "title": "Install from checkout"
+     },
+     {
+      "description": "Telling the user where the tool went and whether they need to add that directory to PATH.",
+      "slug": "path-guidance",
+      "title": "PATH guidance"
+     }
+    ],
+    "description": "Getting claude-keepalive onto a user's machine and onto their PATH.",
+    "slug": "installation",
+    "title": "Installation"
+   },
+   {
+    "areas": [
+     {
+      "description": "Make targets with self-documenting help, including running the tool from the checkout and the no-op build.",
+      "slug": "task-runner",
+      "title": "Task runner & help"
+     },
+     {
+      "description": "Pre-commit hook setup, linting and formatting that mirror what CI enforces.",
+      "slug": "quality-gate",
+      "title": "Quality gate"
+     },
+     {
+      "description": "Running the unit test suite.",
+      "slug": "testing",
+      "title": "Testing"
+     },
+     {
+      "description": "Scanning the tree for vulnerabilities, misconfigurations and secrets the way CI does.",
+      "slug": "security-scanning",
+      "title": "Security scanning"
+     }
+    ],
+    "description": "The build, test and quality commands contributors use to work on the project.",
+    "slug": "developer-tooling",
+    "title": "Developer Tooling"
+   },
+   {
+    "areas": [
+     {
+      "description": "The single accent colour pair, light/dark schemes and logo that give the docs their identity.",
+      "slug": "brand-theme",
+      "title": "Brand theme & colours"
+     },
+     {
+      "description": "Header, sidebar, footer and typography styling for readable docs pages.",
+      "slug": "page-layout",
+      "title": "Page layout & navigation"
+     },
+     {
+      "description": "Styled home hero, feature cards, buttons, code blocks and responsive tables.",
+      "slug": "content-components",
+      "title": "Content components"
+     }
+    ],
+    "description": "The look and feel of the project's published documentation and landing page.",
+    "slug": "documentation-site",
+    "title": "Documentation Site"
+   }
+  ]
+ }
+}
