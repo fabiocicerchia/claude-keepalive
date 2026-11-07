@@ -45,4 +45,4 @@ Feature: Starting a wrapped claude session
     Given claude is running inside claude-keepalive
     When the developer resizes their terminal window
     Then claude is told the new number of rows and columns
-    And claude's layout matches the resized window
+    And the window size claude starts with is the developer's window size at launch

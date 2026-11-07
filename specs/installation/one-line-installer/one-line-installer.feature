@@ -31,4 +31,4 @@ Feature: Installing with the one-line installer
     When the user runs the one-line installer
     Then the installer exits with a non-zero status
     And the message "claude-keepalive installed to …" is not printed
-    And no executable claude-keepalive is produced by this run
+    And this run does not make the downloaded claude-keepalive executable

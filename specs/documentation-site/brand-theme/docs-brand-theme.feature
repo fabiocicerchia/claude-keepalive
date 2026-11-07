@@ -9,8 +9,8 @@ Feature: Presenting the documentation in one consistent brand
   Scenario: The splash page and the docs share one accent colour pair
     Given the accent pair is cyan #22d3ee and indigo #6366f1
     When a reader opens the splash page and then the docs
-    Then the splash page title and install button use the cyan-to-indigo gradient
-    And the docs header and the primary buttons use the same cyan and indigo
+    Then the splash page title and GitHub button use the cyan-to-indigo gradient
+    And the docs home title and primary buttons use the same cyan-to-indigo gradient
     And changing the accent pair in the docs theme changes both the splash page and the docs
 
   @id:documentation-site.brand-theme.002 @rule:docs.brand.scheme-legible-link-colour @inferred @source:docs/stylesheets/extra.css#[data-md-color-scheme="slate"]
@@ -45,4 +45,4 @@ Feature: Presenting the documentation in one consistent brand
     Given a docs page has a plain table wider than the reader's screen
     When the reader views the page on a narrow screen
     Then the table is drawn as a rounded, bordered card with uppercase column headings
-    And the columns past the edge of the screen are cut off rather than reachable by scrolling the table
+    And the columns past the edge of the screen are reachable by scrolling the table sideways rather than cut off
