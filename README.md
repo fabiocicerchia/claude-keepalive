@@ -10,6 +10,13 @@
 [![CI carbon](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/fabiocicerchia/claude-keepalive/gh-pages/badge.json)](.github/workflows/carbon-badge.yml)
 [![Release](https://img.shields.io/github/v/release/fabiocicerchia/claude-keepalive)](https://github.com/fabiocicerchia/claude-keepalive/releases)
 
+> [!WARNING]
+> **This project is retired** and no longer maintained. Claude Code does this
+> itself now: since v2.1.234, when a claude.ai usage limit stops a session it
+> waits in the open session and continues the task after the reset. The
+> [`autoContinueAtUsageLimit`](https://code.claude.com/docs/en/settings-reference#autocontinueatusagelimit)
+> setting controls it, and it is on by default.
+
 ## Features
 
 - Transparent wrapper: runs `claude` inside a PTY (with real window size and
